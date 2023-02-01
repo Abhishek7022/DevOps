@@ -1,0 +1,25 @@
+
+## How to authenticate into git bash
+
+
+- Open the git bash terminal
+    + Go to a particular folder or create one
+    + cd <folder-name>
+    + git init
+
+- Set username and email (global)
+    + git config --global user.name "Abhishek7022"
+    + git config --global user.email "anshu702266@gmail.com"
+    + git config --global --list   (check if correct)
+
+- Make some changes, add and commit to local repository
+    + git status
+    + git add <file-name1> <file-name2> ...
+    + git commit -m "first commit message"
+
+- Push changes from local repository to remote repository
+    + git remote add origin <URL from your github repo>
+      --- git remote add origin https://github.com/Abhishek7022/Serene-Space.git
+    + git remote -v                 (check if the URL is correct)
+    + git push -u origin master     (push to remote repo to master branch)
+
