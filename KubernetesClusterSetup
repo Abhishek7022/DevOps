@@ -1,1 +1,45 @@
+********************Guide to set-up a multi-node kuberenets cluster using VirtualBox (Master and 2 Workers)********************
 
+*Preferred OS: Ubuntu 22.04.1 LTS
+
+--Go to file in VirtualBox and configure the NAT Network:
+           --Network Settings
+                    -setup the network name: linux-cluster
+                    -change the network cidr: 192.168.10.0/24
+
+--Create 3 Vitual Machines:
+           Master           [4GB-4CPUs, 60GB]
+           Worker1          [2GB-2CPUs, 40GB]
+           Worker2          [2GB-2CPUs, 40GB]
+
+--Select a VM and click on settings:
+           --Go to the network
+                     -setup Adapter1: NAT Network  (This will take the network created previously)
+                     -setup Adapter2: Bridged Adapter
+
+*Run the Virtual Machines
+
+--Check the ip address of the nodes: ifconfig (dynamically created)
+            --sudo apt-get install net-tools (*required)
+            --change the IP address of VMs to static IP
+               For example:
+                               Master  = 192.168.10.20
+                               Worker1 = 192.168.10.21
+                               Worker2 = 192.168.10.22
+               -sudo nano /etc/netplan/50-cloud-init.yaml
+                      A text editor open up and add the following content
+
+                           network:
+                                  ethernets:
+                                         enp0s3:
+                                                dhcp4: no
+                                                addresses: [192.168.10.20/24]
+                                         enp0s8:
+                                                dhcp4: true
+                                  version: 2
+                      *Save and exit the nano editor
+               -sudo netplan apply                       *(do this for all VMs)
+
+--Check the new IP address for all the nodes (ifconfig)
+               -ping www.google.com (check internet connectivity on the VM)
+               -sudo apt-get update (updates repository)
