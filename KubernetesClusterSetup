@@ -40,6 +40,72 @@
                       *Save and exit the nano editor
                -sudo netplan apply                       *(do this for all VMs)
 
---Check the new IP address for all the nodes (ifconfig)
+--Check the new IP address for all the nodes (ifconfig):
                -ping www.google.com (check internet connectivity on the VM)
                -sudo apt-get update (updates repository)
+
+--Install openssh and adding hosts for all nodes:
+               -sudo apt-get install openssh-client
+               -sudo apt-get install openssh-server
+               -ssh-keygen -t rsa -b 4096      (generates ssh keys)
+
+               -sudo /etc/hosts
+                     Add below entries
+                             192.168.10.20  master
+                             192.168.10.21  worker1
+                             192.168.10.22  worker2
+
+               -verify the connectivity    (Packets should be received with 0% data loss)
+                    *ping -c 5 master
+                    *ping -c 4 worker1
+
+--Do this on all nodes:
+               --Disable firewall
+                        -ufw disable
+
+               --Swapoff images
+                        -swapoff -a
+                        -nano /etc/fstab    (opens an editor)
+                              comment the line starting with /swap with a # and save and exit
+                                                        or
+                              -sed -i '/swap/d' /etc/fstab
+
+--Update sysctl settings for kubernetes networking:
+               -cat >>/etc/sysctl.d/kubernetes.conf<<EOF
+                net.bridge.bridge-nf-call-ip6tables = 1
+                net.bridge.bridge-nf-call-iptables = 1
+                EOF
+               -sysctl --system              (settings take effect in the same session)
+
+--Installing Docker:
+               -sudo su -                    (login as super-user/root-user)
+               -apt-get update
+               -sudo apt-get install -y docker.io
+
+--Configuring kubernetes repository and gpg keys:
+               -sudo apt-get update
+               -sudo apt-get install -y apt-transport-https ca-certificates curl gpg         (Install apt-transport and curl)
+
+*****Download the public signing key for the Kubernetes package repositories*****
+               -sudo mkdir -p -m 755 /etc/apt/keyrings
+               -curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+               -echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+*****Install kubelet, kubeadm and kubectl*****
+               -sudo apt-get update
+               -sudo apt-get install -y kubelet kubeadm kubectl
+               -sudo apt-mark hold kubelet kubeadm kubectl               (optional: holds the current verion for all these tools i.e v1.29)
+
+*****Set environment for kubeadm as systemd*****
+
+        --sudo nano /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf      (opens nano editor and add the below line after last Environment variable)
+               -Environment="cgroup-driver=systemd/cgroup-driver=cgroupfs"
+
+*****Execute this command on master-node*****
+
+               -kubeadm init --apiserver-advertise-address=192.168.10.20 --pod-network-cidr=192.168.0.0/16
+
+--After the master is initialized execute the below commands as normal user to use kubectl cli tool:
+               -
+               -
+               -
