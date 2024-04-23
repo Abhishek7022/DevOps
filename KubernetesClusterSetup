@@ -73,7 +73,8 @@
 --Update sysctl settings for kubernetes networking:
                -cat >>/etc/sysctl.d/kubernetes.conf<<EOF
                 net.bridge.bridge-nf-call-ip6tables = 1
-                net.bridge.bridge-nf-call-iptables = 1
+                net.bridge.bridge-nf-call-iptables  = 1
+                net.ipv4.ip_forward                 = 1
                 EOF
                -sysctl --system              (settings take effect in the same session)
 
@@ -103,6 +104,7 @@
 
 *****Execute this command on master-node*****
 
+               -kubeadm config images pull                        (pulls images required for the k8s cluster)
                -kubeadm init --apiserver-advertise-address=192.168.10.20 --pod-network-cidr=192.168.0.0/16
 
 --After the master is initialized execute the below commands as normal user to use kubectl cli tool:
