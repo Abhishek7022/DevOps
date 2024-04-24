@@ -1,6 +1,8 @@
-********************Guide to set-up a multi-node kuberenets cluster using VirtualBox (Master and 2 Workers)********************
+********************Guide to set-up a multi-node kuberenets cluster using kubeadm in VirtualBox (Master and 2 Workers)********************
 
 *Preferred OS: Ubuntu 22.04.1 LTS
+
+*****Preliminary setup:*****
 
 --Go to file in VirtualBox and configure the NAT Network:
            --Network Settings
@@ -14,10 +16,13 @@
 
 --Select a VM and click on settings:
            --Go to the network
-                     -setup Adapter1: NAT Network  (This will take the network created previously)
+                     -setup Adapter1: NAT Network  (This will take the NAT network created previously)
                      -setup Adapter2: Bridged Adapter
 
 *Run the Virtual Machines
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+1. Change the IP of all the nodes to static IP:
 
 --Check the ip address of the nodes: ifconfig (dynamically created)
             --sudo apt-get install net-tools (*required)
@@ -58,6 +63,9 @@
                -verify the connectivity    (Packets should be received with 0% data loss)
                     *ping -c 5 master
                     *ping -c 4 worker1
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+2. Disable Swap memory and uintended firewall:
 
 --Do this on all nodes:
                --Disable firewall
@@ -77,6 +85,9 @@
                 net.ipv4.ip_forward                 = 1
                 EOF
                -sysctl --system              (settings take effect in the same session)
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+3. Download Docker and configure the CNI for all nodes:
 
 --Installing Docker:
                -sudo su -                    (login as super-user/root-user)
@@ -95,8 +106,11 @@ EOF
 
                -sudo /etc/containerd/
                -touch config.toml
-               -containerd config default > /etc/containerd/config.toml
-               -sudo nano /etc/containerd/config.toml                      (search and set **SystemdCgroup = true**)
+               -containerd config default > /etc/containerd/config.toml        (This sets the cni for every node and the node will be in ready state)
+               -sudo nano /etc/containerd/config.toml                          (search and set **SystemdCgroup = true**)
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+4. Download and configure the gpg keys and kubernetes repository:
 
 --Configuring kubernetes repository and gpg keys:
                -sudo apt-get update
@@ -111,6 +125,9 @@ EOF
                -sudo apt-get update
                -sudo apt-get install -y kubelet kubeadm kubectl
                -sudo apt-mark hold kubelet kubeadm kubectl               (optional: holds the current verion for all these tools i.e v1.29)
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+5. Configure kubernetes cluster to address various issues:
 
 *****Set environment for kubeadm as systemd*****
 
@@ -127,10 +144,24 @@ EOF
                -sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
                -sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
---Installing the container network interface (CNI) Calico:
+--Installing the container network interface (CNI) Calico:                              **(very important else node will be in NotReady state)
                -kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/tigera-operator.yaml
                -kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/custom-resources.yaml 
                -kubectl get pods -n calico-system             (verify if pods are created)
 
 --Kubeadm to join the custer:
                -kubeadm token create --print-join-command                   (use this command to join the worker node to the cluster)
+
+--Test the cluster:
+               -kubectl get nodes -o wide
+               -kubectl get pods --all-namespaces
+
+--Systemctl commands to troubleshoot k8s cluster:
+               -systemctl daemon-reload                       (reloads the cluster configuration)
+               -systemctl restart kubelet
+               -systemctl restart docker
+               -systemctl restart containerd
+               -systemctl enable kubelet
+               -systemctl status kubelet
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
