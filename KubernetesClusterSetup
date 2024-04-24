@@ -82,6 +82,21 @@
                -sudo su -                    (login as super-user/root-user)
                -apt-get update
                -sudo apt-get install -y docker.io
+               -cat <<EOF | sudo tee /etc/docker/daemon.json
+{
+      "exec-opts": ["native.cgroupdriver=systemd"],
+      "log-driver": "json-file",
+      "log-opts": {
+      "max-size": "100m"
+   },
+       "storage-driver": "overlay2"
+       }
+EOF
+
+               -sudo /etc/containerd/
+               -touch config.toml
+               -containerd config default > /etc/containerd/config.toml
+               -sudo nano /etc/containerd/config.toml                      (search and set **SystemdCgroup = true**)
 
 --Configuring kubernetes repository and gpg keys:
                -sudo apt-get update
@@ -114,9 +129,8 @@
 
 --Installing the container network interface (CNI) Calico:
                -kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/tigera-operator.yaml
-               -curl https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/custom-resources.yaml -O
-               -kubectl create -f custom-resources.yaml
-               -kubectl get pods -n calico-system     (verify if pods are created)
+               -kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/custom-resources.yaml 
+               -kubectl get pods -n calico-system             (verify if pods are created)
 
 --Kubeadm to join the custer:
                -kubeadm token create --print-join-command                   (use this command to join the worker node to the cluster)
