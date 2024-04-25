@@ -1,1 +1,42 @@
+**************************************How to setup Jenkins on Ubuntu machine/Master node of k8s cluster*****************************************
 
+1. Check if Java is installed:
+       -java -version                         (If not installed follow below steps)
+       -sudo apt-get update
+       -sudo apt-get install default-jre      (Install default JRE)
+       -sudo apt-get install default-jdk      (May require Java Development Kit)
+
+2. Set the JAVA_HOME Environment variable:
+       -readlink -f /usr/bin/java             (output on screen: /usr/lib/jvm/java-11-openjdk-amd64/bin/java)
+       -sudo nano /etc/environment            (opens env file)
+       -JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"              (Add this line at the end of the file)
+       -source /etc/environment               (save and reload the file to apply changes)
+       -echo $JAVA_HOME                       (verify env variable is set)
+
+3. Do a sample test for a simple java program:
+       -sudo nano yash.java
+class yash{
+     public static void
+main(String args[]){
+
+System.out.println("Welcome yash as a backend developer");
+     }
+}
+
+       -javac yash.java                       (compile java code)
+       -java yash                             (run the java program)
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+4. Installing Jenkins on Ubuntu machine/Master node:
+       -sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \                          (Add the key to the system)
+          https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+
+       -echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \                  (Add Jenkins apt repository entry)
+          https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+          /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+       -sudo apt-get update                                                             (Update the local package index and install Jenkins)
+       -sudo apt-get install fontconfig openjdk-17-jre
+       -sudo apt-get install jenkins
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
