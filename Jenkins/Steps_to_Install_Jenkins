@@ -40,3 +40,14 @@ System.out.println("Welcome yash as a backend developer");
        -sudo apt-get install jenkins
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------
+
+5. Verify Installation:
+       -sudo systemctl status jenkins
+       -sudo systemctl restart jenkins         (Incase jenkins is not running)
+       -sudo systemctl enable jenkins
+
+6. Connect to Jenkins:
+       -Go to a web-browser and do localhost:8080
+       -sudo systemctl status jenkins          (first time password to log into jenkins)
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
