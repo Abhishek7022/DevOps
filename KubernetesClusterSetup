@@ -104,7 +104,7 @@
        }
 EOF
 
-               -sudo /etc/containerd/
+               -sudo cd /etc/containerd/
                -touch config.toml
                -containerd config default > /etc/containerd/config.toml        (This sets the cni for every node and the node will be in ready state)
                -sudo nano /etc/containerd/config.toml                          (search and set **SystemdCgroup = true**)
