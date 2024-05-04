@@ -54,7 +54,7 @@
                -sudo apt-get install openssh-server
                -ssh-keygen -t rsa -b 4096      (generates ssh keys)
 
-               -sudo /etc/hosts
+               -sudo nano /etc/hosts
                      Add below entries
                              192.168.10.20  master
                              192.168.10.21  worker1
@@ -62,7 +62,7 @@
 
                -verify the connectivity    (Packets should be received with 0% data loss)
                     *ping -c 5 master
-                    *ping -c 4 worker1
+                    *ping -c 4 worker
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
 2. Disable Swap memory and uintended firewall:
@@ -104,7 +104,7 @@
        }
 EOF
 
-               -sudo cd /etc/containerd/
+               -sudo mkdir -p /etc/containerd/
                -touch config.toml
                -containerd config default > /etc/containerd/config.toml        (This sets the cni for every node and the node will be in ready state)
                -sudo nano /etc/containerd/config.toml                          (search and set **SystemdCgroup = true**)
