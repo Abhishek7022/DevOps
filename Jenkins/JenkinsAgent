@@ -1,5 +1,39 @@
+                                                 *****Jenkins Agents*****
+
 Jenkins Agents are used to run jenkins builds,jobs or workload on nodes other than the built-in node or master node.
 They are referred as Jenkins slave nodes or agents.
 
 There are serveral methods to configure these agents on Jenkins.
- 
+
+1. Cloud Agents (Using Docker Cloud)
+2. Docker Containers (As permanent nodes)
+3. Remote machines (Nodes other than the master node)
+4. Kubernetes (Jenkins builds can run as pods)
+
+
+
+     *****Cloud Agents (Using Docker Cloud)*****
+
+--Open Jenkins
+     Manage Jenkins > Clouds > New cloud (Select Docker and give a name)
+          > Docker cloud details
+               Set Docker Host URI: unix:///var/run/docker.sock              (When docker and jenkins are running on the same machine)
+                                 or tcp://0.0.0.0:2375                       (When jenkins needs to connect to docker daemon on another machine)
+               Check mark Enabled and Expose Docker_Host option
+
+          > Docker Agent Templates
+               Labels: docker-agent-alpine                                   (Very important to label agent properly, jenkins will use this label to search agents)
+               Docker image: jenkins/agent:latest-jdk11                      (Image should have java pre-installed for -attach docker container method)
+               Instance capacity: 2                                          (Simultaneous instances)
+               Remote File System Root: /home/jenkins/cloudagent             (Can be anything)
+
+     Leave the rest to default and save the agent settings.
+
+--Now to use this Docker cloud agent, Use label for you agent in the Jenkinsfile:
+          agent {
+            docker {
+                label 'docker-agent-alpine'
+            }
+          }
+
+
