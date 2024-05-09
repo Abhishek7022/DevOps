@@ -1,16 +1,33 @@
-kubernetes
+Tools used by an awesome DevOps Engineer.
 
 This repository contains all the basic Information regarding some of the most widely used tools by DevOps Engineers.
 
 
-Tool Info:
+Tool Stack Info:
++ Linux Administration
 + Git
 + Docker
 + Kubernetes
 + Jenkins
-+ Ansible
++ Terraform/Ansible
 + Helm
-+ Linux Administration
++ CI/CD Implementation
++ Jira
++ Openshift
++ Prometheus & Grafana
++ PostgreSQL
++ RestAPI
+
+
+Programming Languages:
++ Python
++ GoLang
++ Shell scripting
+
+
+Cloud Technology:
++ AWS (Intermediate)
++ GCP Associate Cloud Engineer
 
 
 
