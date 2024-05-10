@@ -1,1 +1,2 @@
-
+whoami                       (displays current user)
+hostname                     (displays hostname)
