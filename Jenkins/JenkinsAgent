@@ -11,6 +11,10 @@ There are serveral methods to configure these agents on Jenkins.
 4. Kubernetes (Jenkins builds can run as pods)
 
 
+-----Important Note-----
+sudo usermod -aG docker jenkins       (allow jenkins user to communicate with the docker daemon to run builds)
+
+
 
      *****Cloud Agents (Using Docker Cloud)*****
 
@@ -29,7 +33,7 @@ There are serveral methods to configure these agents on Jenkins.
 
      Leave the rest to default and save the agent settings.
 
---Now to use this Docker cloud agent, Use label for you agent in the Jenkinsfile:
+     Now to use this Docker cloud agent, Use label for you agent in the Jenkinsfile:
           agent {
             docker {
                 label 'docker-agent-alpine'
@@ -37,3 +41,22 @@ There are serveral methods to configure these agents on Jenkins.
           }
 
 
+
+     *****Node Agents (Using physical/virtual machines)*****
+
+--Open Jenkins
+     Manage Jenkins > Nodes > +New Node > (Give node name and click on Permanent Agent)
+          > Enter various details such as (description, number of executors(ideally = VRAM or cpu cores))
+          > (remote root directory, labels(**imp), usage)
+          > (Launch method: Launch agent by connecting it to controller         (agent will connect with jenkins master: with the help of agent.jar)
+                            Launch agent via SSH                                (Jenkins will connect to the agent machine)
+                            Docker variant of launch via ssh key injection)
+            Select the most appropriate option and click save
+
+     Try running a job with the same label to verify connectivity.
+          --In case of Launch agent via ssh:: make sure the file permissions are set properly for remote root directory || The user should own the directory 770.
+          --Launch agent by connecting it to the controller:: After setting up agent, click on it and run all the commands in the agent machine.
+
+     Things to consider:
+           Make sure the remote root directory exists on the agent machine and the specified user,
+           which will connect to this agent machine has the necessary rw permissions.
