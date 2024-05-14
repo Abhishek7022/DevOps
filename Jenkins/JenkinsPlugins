@@ -1,0 +1,23 @@
+*********************************** Important Plugins in Jenkins ***********************************
+
+
+A plugin is an extension that can be used to enhance the functionality of jenkins. It allows jenkins to integrate various plugins into one and allows you to utilize all the features of these plugins. Making your project more efficient and robust.
+
+
+Although there are hundreds of plugins in Jenkins, Most widely used plugins are as follows:
+
+Git                 - Plugin used to integrate git with Jenkins.
+Docker              - Plugin used to integrate docker with Jenkins.
+Pipeline            - Plugin used to create and configure Jenkins pipeline.
+Docker Pipeline     - Plugin used to run jenkins builds/jobs in isolation using docker containers.
+Blue Ocean          - Plugin to view jobs and pipelines in amazing UI, making it easier to understand.
+SonarQube Scanner   - Plugin used to check quiality of the code, duplication and optimization.
+Jfrog               - Plugin used to create artifactory to store jenkins builds.
+Prometheus Plugin   - Plugin uses UI to expose jenkins metrics, used for monitoring.
+Kubernetes Plugin   - Plugin creates a k8s pod for every agent with specified docker image.
+Maven               - Plugin is used to compile, build and package the application.
+Credentials Plugin  - Plugin for storing credentials.
+LDAP                - Plugin used to authenticate and authorize users with LDAP.
+
+
+These are some jenkins plugins which are widely used, Jenkins has around 1800 plugins and can be used to create and configure projects depending on the requirements.
